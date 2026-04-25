@@ -1,0 +1,44 @@
+{
+  "config": {
+    "levels": 16,
+    "distance": 1,
+    "angles_deg": [
+      0,
+      45,
+      90,
+      135
+    ],
+    "symmetric": true,
+    "normalized": true
+  },
+  "results": {
+    "checker.png": {
+      "contrast_0deg": 13.235294117647058,
+      "contrast_45deg": 24.913494809688583,
+      "contrast_90deg": 13.235294117647058,
+      "contrast_135deg": 24.913494809688583,
+      "contrast_mean": 19.074394463667822
+    },
+    "stripes.png": {
+      "contrast_0deg": 27.352941176470587,
+      "contrast_45deg": 27.352941176470587,
+      "contrast_90deg": 0.0,
+      "contrast_135deg": 27.352941176470587,
+      "contrast_mean": 20.514705882352942
+    },
+    "noise.png": {
+      "contrast_0deg": 42.24439338235294,
+      "contrast_45deg": 41.91860053825452,
+      "contrast_90deg": 42.39448529411764,
+      "contrast_135deg": 41.99084967320262,
+      "contrast_mean": 42.13708222198193
+    },
+    "gradient.png": {
+      "contrast_0deg": 0.058823529411764705,
+      "contrast_45deg": 0.058823529411764705,
+      "contrast_90deg": 0.0,
+      "contrast_135deg": 0.058823529411764705,
+      "contrast_mean": 0.044117647058823525
+    }
+  }
+}
