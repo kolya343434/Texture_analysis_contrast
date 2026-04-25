@@ -1,0 +1,8 @@
+{
+  "variant": 14,
+  "levels": 16,
+  "distance": 1,
+  "angles_deg": [0, 45, 90, 135],
+  "symmetric": true,
+  "normalized": true
+}
