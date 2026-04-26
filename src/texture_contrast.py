@@ -128,7 +128,7 @@ def glcm_images(
     return mats
 
 
-def glcm_to_grayscale_image(p: np.ndarray, *, log_norm: bool = False) -> Image.Image:
+def glcm_to_grayscale_image(p: np.ndarray, *, log_norm: bool = False, gamma: float = 0.25) -> Image.Image:
     """
     Visualize GLCM matrix as a grayscale image.
     If log_norm=True, uses log(1 + p) for better visibility when values are tiny.
@@ -139,6 +139,11 @@ def glcm_to_grayscale_image(p: np.ndarray, *, log_norm: bool = False) -> Image.I
     mx = float(x.max()) if x.size else 0.0
     if mx > 0:
         x = x / mx
+    g = float(gamma)
+    if g <= 0:
+        raise ValueError("gamma must be > 0.")
+    if g != 1.0:
+        x = np.power(x, g)
     img_u8 = np.clip(x * 255.0, 0, 255).astype(np.uint8)
     return Image.fromarray(img_u8, mode="L").resize((256, 256), resample=Image.Resampling.NEAREST)
 

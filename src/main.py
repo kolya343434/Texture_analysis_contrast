@@ -32,6 +32,7 @@ def main() -> int:
     parser.add_argument("--demo", action="store_true", help="Generate demo textures and compute features for them.")
     parser.add_argument("--save-glcm", action="store_true", help="Save GLCM visualizations (PNG) into assets/glcm/.")
     parser.add_argument("--log-norm", action="store_true", help="Use log-normalization for GLCM visualization.")
+    parser.add_argument("--gamma", type=float, default=0.25, help="Gamma for GLCM visualization (default: 0.25).")
     parser.add_argument("--json-out", type=str, default=None, help="Write results to JSON file.")
     args = parser.parse_args()
 
@@ -59,7 +60,9 @@ def main() -> int:
                 out_dir = repo_root / "assets" / "glcm" / p.stem
                 out_dir.mkdir(parents=True, exist_ok=True)
                 for angle, mat in mats.items():
-                    glcm_to_grayscale_image(mat, log_norm=args.log_norm).save(out_dir / f"glcm_{angle}deg.png")
+                    glcm_to_grayscale_image(mat, log_norm=args.log_norm, gamma=args.gamma).save(
+                        out_dir / f"glcm_{angle}deg.png"
+                    )
     else:
         if not args.image:
             raise SystemExit("Provide --image PATH or use --demo.")
@@ -70,7 +73,9 @@ def main() -> int:
             out_dir = repo_root / "assets" / "glcm" / Path(args.image).stem
             out_dir.mkdir(parents=True, exist_ok=True)
             for angle, mat in mats.items():
-                glcm_to_grayscale_image(mat, log_norm=args.log_norm).save(out_dir / f"glcm_{angle}deg.png")
+                glcm_to_grayscale_image(mat, log_norm=args.log_norm, gamma=args.gamma).save(
+                    out_dir / f"glcm_{angle}deg.png"
+                )
 
     print(json.dumps({"config": cfg.__dict__, "results": results_all}, ensure_ascii=False, indent=2))
 
