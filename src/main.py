@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from texture_contrast import GLCMConfig, contrast_features, generate_demo_textures, load_grayscale
+from texture_contrast import glcm_images, glcm_to_grayscale_image
 
 
 def _load_variant14_config(repo_root: Path) -> GLCMConfig:
@@ -29,6 +30,8 @@ def main() -> int:
     parser.add_argument("--angles", type=str, default=None, help='Comma-separated angles in degrees, e.g. "0,45,90,135".')
     parser.add_argument("--variant", type=int, default=14, help="Variant number (default: 14).")
     parser.add_argument("--demo", action="store_true", help="Generate demo textures and compute features for them.")
+    parser.add_argument("--save-glcm", action="store_true", help="Save GLCM visualizations (PNG) into assets/glcm/.")
+    parser.add_argument("--log-norm", action="store_true", help="Use log-normalization for GLCM visualization.")
     parser.add_argument("--json-out", type=str, default=None, help="Write results to JSON file.")
     args = parser.parse_args()
 
@@ -51,11 +54,23 @@ def main() -> int:
         for p in paths:
             img = load_grayscale(p)
             results_all[p.name] = contrast_features(img, cfg)
+            if args.save_glcm:
+                mats = glcm_images(img, cfg)
+                out_dir = repo_root / "assets" / "glcm" / p.stem
+                out_dir.mkdir(parents=True, exist_ok=True)
+                for angle, mat in mats.items():
+                    glcm_to_grayscale_image(mat, log_norm=args.log_norm).save(out_dir / f"glcm_{angle}deg.png")
     else:
         if not args.image:
             raise SystemExit("Provide --image PATH or use --demo.")
         img = load_grayscale(args.image)
         results_all[Path(args.image).name] = contrast_features(img, cfg)
+        if args.save_glcm:
+            mats = glcm_images(img, cfg)
+            out_dir = repo_root / "assets" / "glcm" / Path(args.image).stem
+            out_dir.mkdir(parents=True, exist_ok=True)
+            for angle, mat in mats.items():
+                glcm_to_grayscale_image(mat, log_norm=args.log_norm).save(out_dir / f"glcm_{angle}deg.png")
 
     print(json.dumps({"config": cfg.__dict__, "results": results_all}, ensure_ascii=False, indent=2))
 

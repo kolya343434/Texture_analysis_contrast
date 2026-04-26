@@ -47,6 +47,19 @@
 
 `assets/demo_results.json` содержит полный JSON из демо.
 
+## Визуализация GLCM (матрица в градациях серого)
+По требованию: **визуализация матрицы GLCM в градациях серого**.  
+Если «всё чёрное», включается **логарифмическое нормирование**: `log(1 + P)`.
+
+Запуск генерации картинок GLCM:
+`python src/main.py --demo --save-glcm --log-norm`
+
+Пример (текстура `checker`, углы `0°/45°/90°/135°`):
+
+| 0° | 45° | 90° | 135° |
+|---|---|---|---|
+| ![](assets/glcm/checker/glcm_0deg.png) | ![](assets/glcm/checker/glcm_45deg.png) | ![](assets/glcm/checker/glcm_90deg.png) | ![](assets/glcm/checker/glcm_135deg.png) |
+
 ## Файлы
 - `src/texture_contrast.py` — построение GLCM и расчёт `contrast`
 - `src/main.py` — CLI для запуска (вариант 14 по умолчанию)

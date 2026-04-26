@@ -106,6 +106,43 @@ def contrast_features(image_u8: np.ndarray, cfg: GLCMConfig) -> dict[str, float]
     return results
 
 
+def glcm_images(
+    image_u8: np.ndarray,
+    cfg: GLCMConfig,
+) -> dict[int, np.ndarray]:
+    """
+    Returns normalized GLCM matrices for each angle (keys are angles in degrees).
+    """
+    image_q = quantize(image_u8, cfg.levels)
+    mats: dict[int, np.ndarray] = {}
+    for angle in cfg.angles_deg:
+        dx, dy = _offset_from_angle(cfg.distance, angle)
+        mats[int(angle)] = glcm(
+            image_q,
+            levels=cfg.levels,
+            dx=dx,
+            dy=dy,
+            symmetric=cfg.symmetric,
+            normalized=True,
+        )
+    return mats
+
+
+def glcm_to_grayscale_image(p: np.ndarray, *, log_norm: bool = False) -> Image.Image:
+    """
+    Visualize GLCM matrix as a grayscale image.
+    If log_norm=True, uses log(1 + p) for better visibility when values are tiny.
+    """
+    x = p.astype(np.float64)
+    if log_norm:
+        x = np.log1p(x)
+    mx = float(x.max()) if x.size else 0.0
+    if mx > 0:
+        x = x / mx
+    img_u8 = np.clip(x * 255.0, 0, 255).astype(np.uint8)
+    return Image.fromarray(img_u8, mode="L").resize((256, 256), resample=Image.Resampling.NEAREST)
+
+
 def generate_demo_textures(out_dir: str | Path, *, size: int = 256) -> list[Path]:
     out_path = Path(out_dir)
     out_path.mkdir(parents=True, exist_ok=True)
